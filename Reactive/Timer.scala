@@ -5,7 +5,7 @@ import rx._
 ** Usage: Timer(fps, dur).subscribe()
 ** This returns a rx double, the updated time, based on inputs
 */
-case class Timer(framesPerSecond: Int, duration: Double) {
+case class Timer(framesPerSecond: Double, duration: Double) {
 	val totalFrames = duration * framesPerSecond
 	val frameSpeed = (duration * 1000) / totalFrames
 	val currentTime = Var(0.0)
