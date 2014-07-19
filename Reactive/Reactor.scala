@@ -28,10 +28,9 @@ object Reactive {
 ** Usage:
 ** @params reaction: a final val from Reactive, such as Reactive.MouseClickGetClockTick
 */
-//todo: try pattern matching on reaction instead of using 'val observe'
 import Reactive._
 case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int = 0, duration: Double = 0) {
-	val observe: Rx[Any] = reaction match {
+	val target: Rx[Any] = reaction match {
 		case Reactive.ClockTick => Timer(framesPerSecond, duration).subscribe
 		case Reactive.MouseClick => MouseClick.subscribe
 		case Reactive.MousePosition => MouseClick.subscribe
@@ -78,5 +77,9 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int
 			rx
 		}
 	}
-	//todo: based on whatever reactive variable observe is, call fn and pass the appropriate arguments
+
+	Obs(target) {
+		val graphic = fn(target())
+		//todo: now render the graphic
+	}
 }
