@@ -20,13 +20,13 @@ object Reactive {
 	final val MousePositionY: Reactive = 6
 
 	final val ClockTickGetMousePosition: Reactive = 7
-	final val MouseClickGetClockTick: Reactive = 8
-	final val MousePositionGetClockTick: Reactive = 9
+	final val MouseClickGetClockTime: Reactive = 8
+	final val MousePositionGetClockTime: Reactive = 9
 }
 
 /*
 ** Usage:
-** @params reaction: a final val from Reactive, such as Reactive.MouseClickGetClockTick
+** @params reaction: a final val from Reactive, such as Reactive.MouseClickGetClockTime
 */
 import Reactive._
 case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int = 0, duration: Double = 0) {
@@ -58,7 +58,7 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int
 			}
 			rx
 		}
-		case Reactive.MouseClickGetClockTick => {
+		case Reactive.MouseClickGetClockTime => {
 			val click_sub = MouseClick.subscribe
 			val startTime = new js.Date().getTime()
 			val rx = Var(0.0)
@@ -67,7 +67,7 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int
 			}
 			rx
 		}
-		case Reactive.MousePositionGetClockTick => {
+		case Reactive.MousePositionGetClockTime => {
 			val pos_sub = MousePosition.subscribe
 			val startTime = new js.Date().getTime()
 			val rx = Var(0.0)
