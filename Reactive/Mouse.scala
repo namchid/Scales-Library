@@ -7,6 +7,8 @@ import rx._
 */
 object MouseClick {
 	val xy = Var((0, 0))
+	val x = Rx { xy()._1 }
+	val y = Rx { xy()._2 }
 
 	private def listen() = Rx {
 		dom.onclick = { 
@@ -17,6 +19,8 @@ object MouseClick {
 	listen()
 
 	def subscribe(): Rx[(Int, Int)] = xy
+	def subscribeX(): Rx[Int] = x
+	def subscribeY(): Rx[Int] = y
 }
 
 /*
@@ -25,6 +29,8 @@ object MouseClick {
 */
 object MousePosition {
 	val xy = Var((0, 0))
+	val x = Rx { xy()._1 }
+	val y = Rx { xy()._2 }
 
 	private def listen() = Rx {
 		dom.onmousemove = {
@@ -35,5 +41,7 @@ object MousePosition {
 	listen()
 
 	def subscribe(): Rx[(Int, Int)] = xy
+	def subscribeX(): RX[Int] = x
+	def subscribeY(): Rx[Int] = y
 }
 

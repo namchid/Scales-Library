@@ -3,6 +3,8 @@ import rx._
 
 case class Graphic {} //just placeholder for actual Graphic
 
+object Canvas {} //just a placeholder for actual Canvas
+
 /*
 ** Usage example: Reactor(Reactive.ClockTick, ...)  
 ** The above creates a reactor that reacts to clock ticks
@@ -31,25 +33,27 @@ object Reactive {
 import Reactive._
 case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int = 0, duration: Double = 0) {
 	val target: Rx[Any] = reaction match {
-		case Reactive.ClockTick => Timer(framesPerSecond, duration).subscribe
-		case Reactive.MouseClick => MouseClick.subscribe
-		case Reactive.MousePosition => MouseClick.subscribe
-		case Reactive.MouseClickX => {
-			val sub = MouseClick.subscribe
-			Rx {sub()._1}
-		}
-		case Reactive.MouseClickY => {
-			val sub = MouseClick.subscribe
-			Rx {sub()._2}
-		}
-		case Reactive.MousePositionX => {
-			val sub = MousePosition.subscribe
-			Rx {sub()._1}
-		}
-		case Reactive.MousePositionY => {
-			val sub = MousePosition.subscribe
-			Rx {sub()._2}
-		}
+		case Reactive.ClockTick => 
+			Timer(framesPerSecond, duration).subscribe
+
+		case Reactive.MouseClick => 
+			MouseClick.subscribe
+		
+		case Reactive.MousePosition => 
+			MouseClick.subscribe
+		
+		case Reactive.MouseClickX => 
+			MouseClick.subscribeX
+		
+		case Reactive.MouseClickY => 
+			MouseClick.subscribeY
+		
+		case Reactive.MousePositionX => 
+			MousePosition.subscribeX
+		
+		case Reactive.MousePositionY => 
+			MousePosition.subscribeY
+		
 		case Reactive.ClockTickGetMousePosition => {
 			val clock_sub = Timer(framesPerSecond, duration).subscribe
 			val rx = Var(MouseMove.xy())
@@ -58,6 +62,7 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int
 			}
 			rx
 		}
+		
 		case Reactive.MouseClickGetClockTime => {
 			val click_sub = MouseClick.subscribe
 			val startTime = new js.Date().getTime()
@@ -67,6 +72,7 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int
 			}
 			rx
 		}
+		
 		case Reactive.MousePositionGetClockTime => {
 			val pos_sub = MousePosition.subscribe
 			val startTime = new js.Date().getTime()
@@ -78,6 +84,8 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int
 		}
 	}
 
+	val canvasIndex = //todo
+	//todo: initGraphic => possibly do that above
 	Obs(target) {
 		val graphic = fn(target())
 		//todo: now render the graphic
