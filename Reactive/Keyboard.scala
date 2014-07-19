@@ -31,6 +31,7 @@ object Key {
 	final val Shift: Key = 16
 	final val Ctrl: Key = 17
 	final val Alt: Key = 18
+	final val Space: Key = 32
 
 	final val Left: Key = 37
 	final val Up: Key = 38
