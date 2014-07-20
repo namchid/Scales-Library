@@ -31,7 +31,11 @@ object Reactive {
 ** @params reaction: a final val from Reactive, such as Reactive.MouseClickGetClockTime
 */
 import Reactive._
-case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int = 0, duration: Double = 0) {
+case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = "grey", strokeStyle: String = "black", lineWidth: Int = "1", 
+	framesPerSecond: Double = 0, duration: Double = 0) {
+	
+	val function = fn.asInstanceOf[(Any => Graphic)]
+
 	val target: Rx[Any] = reaction match {
 		case Reactive.ClockTick => 
 			Timer(framesPerSecond, duration).subscribe
@@ -82,12 +86,24 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, framesPerSecond: Int
 			}
 			rx
 		}
+
+		case _ => Var(0) // default value never changes
 	}
 
-	val canvasIndex = //todo
-	//todo: initGraphic => possibly do that above
+	val index = Var(-1)
+
+	private def initGraphic(g: Graphic): Unit = {
+		CanvasHandler.setAll(index(), fillStyle, strokeStyle, lineWidth)
+		CanvasHandler.addGraphic(g)
+	}
+
 	Obs(target) {
-		val graphic = fn(target())
-		//todo: now render the graphic
+		val g = function(target())
+		if(index() == -1) {
+			index() = CanvasHandler.getIndex
+			initGraphic(g)
+		} else {
+			CanvasHandler.updateGraphic(index(), g)
+		}
 	}
 }
