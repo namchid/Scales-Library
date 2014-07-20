@@ -23,68 +23,68 @@ object Keyboard {
 ** Usage example: KeyPressed(Key.Enter).subscribe()
 */
 object Key {
-	type Key = Int
+	type KeyType = Int
 
-	final val Backspace: Key = 8
-	final val Tab: Key = 9
-	final val Enter: Key = 13
-	final val Shift: Key = 16
-	final val Ctrl: Key = 17
-	final val Alt: Key = 18
-	final val Space: Key = 32
+	final val Backspace: KeyType = 8
+	final val Tab: KeyType = 9
+	final val Enter: KeyType = 13
+	final val Shift: KeyType = 16
+	final val Ctrl: KeyType = 17
+	final val Alt: KeyType = 18
+	final val Space: KeyType = 32
 
-	final val Left: Key = 37
-	final val Up: Key = 38
-	final val Right: Key = 39
-	final val Down: Key = 40
+	final val Left: KeyType = 37
+	final val Up: KeyType = 38
+	final val Right: KeyType = 39
+	final val Down: KeyType = 40
 
-	final val Zero: Key = 48
-	final val One: Key = 49
-	final val Two: Key = 50
-	final val Three: Key = 51
-	final val Four: Key = 52
-	final val Five: Key = 53
-	final val Six: Key = 54
-	final val Seven: Key = 55
-	final val Eight: Key = 56
-	final val Nine: Key = 57
+	final val Zero: KeyType = 48
+	final val One: KeyType = 49
+	final val Two: KeyType = 50
+	final val Three: KeyType = 51
+	final val Four: KeyType = 52
+	final val Five: KeyType = 53
+	final val Six: KeyType = 54
+	final val Seven: KeyType = 55
+	final val Eight: KeyType = 56
+	final val Nine: KeyType = 57
 
-	final val A: Key = 65
-	final val B: Key = 66
-	final val C: Key = 67
-	final val D: Key = 68
-	final val E: Key = 69
-	final val F: Key = 70
-	final val G: Key = 71
-	final val H: Key = 72
-	final val I: Key = 73
-	final val J: Key = 74
-	final val K: Key = 75
-	final val L: Key = 76
-	final val M: Key = 77
-	final val N: Key = 78
-	final val O: Key = 79
-	final val P: Key = 80
-	final val Q: Key = 81
-	final val R: Key = 82
-	final val S: Key = 83
-	final val T: Key = 84
-	final val U: Key = 85
-	final val V: Key = 86
-	final val W: Key = 87
-	final val X: Key = 88
-	final val Y: Key = 89
-	final val Z: Key = 90
+	final val A: KeyType = 65
+	final val B: KeyType = 66
+	final val C: KeyType = 67
+	final val D: KeyType = 68
+	final val E: KeyType = 69
+	final val F: KeyType = 70
+	final val G: KeyType = 71
+	final val H: KeyType = 72
+	final val I: KeyType = 73
+	final val J: KeyType = 74
+	final val K: KeyType = 75
+	final val L: KeyType = 76
+	final val M: KeyType = 77
+	final val N: KeyType = 78
+	final val O: KeyType = 79
+	final val P: KeyType = 80
+	final val Q: KeyType = 81
+	final val R: KeyType = 82
+	final val S: KeyType = 83
+	final val T: KeyType = 84
+	final val U: KeyType = 85
+	final val V: KeyType = 86
+	final val W: KeyType = 87
+	final val X: KeyType = 88
+	final val Y: KeyType = 89
+	final val Z: KeyType = 90
 }
 
 //note: not tested on numpad numbers/keys. these probably need wrapping
 import Key._
-case class KeyPressed(key: Key) {	
+case class KeyPressed(key: Key.KeyType) {	
 	val keyboard = Keyboard.subscribe
 	val timesPressed = Var(0)
 
 	Obs(keyboard) {
-		(keyboard() == k) match {
+		(keyboard() == key) match {
 			case true => timesPressed() += 1
 			case false =>
 		}
