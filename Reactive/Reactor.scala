@@ -48,7 +48,7 @@ object Reactive {
 }
 
 /*
-** Usage:
+** Usage example: Reactor(Reactive.ClockTick(2, 10), fn, "red", "blue", 0)
 ** @params reaction: a final val from Reactive, such as Reactive.MouseClickGetClockTime
 */
 case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = "grey", strokeStyle: String = "black", lineWidth: Int = 1) {
