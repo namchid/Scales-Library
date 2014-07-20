@@ -97,8 +97,12 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 		CanvasHandler.addGraphic(g)
 	}
 
+	val changes = Var(0)
+	def countChanges(): Int = changes()
+
 	Obs(target) {
 		val g = function(target())
+		changes() += 1
 		if(index() == -1) {
 			index() = CanvasHandler.getIndex
 			initGraphic(g)
