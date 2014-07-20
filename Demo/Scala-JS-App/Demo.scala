@@ -146,10 +146,20 @@ object ScalaJSExample extends js.JSApp {
     dom.document.getElementById("playground").appendChild(paragraph)
 
 /////////////////// tehehehehe
-    def fn(xy: (Int, Int)): Graphic = {
+    def fnMouse(xy: (Int, Int)): Graphic = {
       Rectangle(100, 200).translate(xy._1, xy._2)
     }
 
-    Reactor(Reactive.MouseClick, fn)
+    def fnMouseX(x: Int): Graphic = {
+      Rectangle(50, 100).translate(x, 300)
+    }
+
+    def fnMouseY(y: Int): Graphic = {
+      Rectangle(50, 100).translate(250, y)
+    }
+
+    Reactor(Reactive.MouseClick, fnMouse)
+    Reactor(Reactive.MouseClickX, fnMouseX, "blue")
+    Reactor(Reactive.MouseClickY, fnMouseY, "red")
   }
 }
