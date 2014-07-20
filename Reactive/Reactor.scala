@@ -56,28 +56,31 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 	val function = fn.asInstanceOf[(Any => Graphic)]
 
 	val target: Rx[Any] = reaction match {
-		case Reactive.ClockTick => 
-			Timer(framesPerSecond, duration).subscribe
+		case x: CTick => 
+			Timer(x.fps, x.dur).subscribe
 
-		case Reactive.MouseClick => 
+		case x: KPress =>
+			KeyPress(x.key).subscribe
+
+		case x: MClick => 
 			MouseClick.subscribe
 		
-		case Reactive.MousePosition => 
+		case x: MPos => 
 			MouseClick.subscribe
 		
-		case Reactive.MouseClickX => 
+		case x: MClickX => 
 			MouseClick.subscribeX
 		
-		case Reactive.MouseClickY => 
+		case x: MClickY => 
 			MouseClick.subscribeY
 		
-		case Reactive.MousePositionX => 
+		case x: MPosX => 
 			MousePosition.subscribeX
 		
-		case Reactive.MousePositionY => 
+		case x: MPosY => 
 			MousePosition.subscribeY
 		
-		case Reactive.ClockTickGetMousePosition => {
+		case x: CTickGetMPos => {
 			val clock_sub = Timer(framesPerSecond, duration).subscribe
 			val rx = Var(MouseMove.xy())
 			Obs(clock_sub) {
@@ -86,7 +89,7 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 			rx
 		}
 		
-		case Reactive.MouseClickGetClockTime => {
+		case x: MClickGetCTime => {
 			val click_sub = MouseClick.subscribe
 			val startTime = new js.Date().getTime()
 			val rx = Var(0.0)
@@ -96,11 +99,21 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 			rx
 		}
 		
-		case Reactive.MousePositionGetClockTime => {
+		case x: MPosGetCTime => {
 			val pos_sub = MousePosition.subscribe
 			val startTime = new js.Date().getTime()
 			val rx = Var(0.0)
 			Obs(pos_sub) {
+				rx() = (new js.Date().getTime() - startTime) / 1000
+			}
+			rx
+		}
+
+		case x: KPressGetCTime => {
+			val key_sub = KeyPress(x.key).subscribe
+			val startTime = new js.Date().getTime()
+			val rx = Var(0.0)
+			Obs(key_sub) {
 				rx() = (new js.Date().getTime() - startTime) / 1000
 			}
 			rx
