@@ -51,8 +51,7 @@ object Reactive {
 ** Usage:
 ** @params reaction: a final val from Reactive, such as Reactive.MouseClickGetClockTime
 */
-case class Reactor[T](reaction: Reactive.ReactionType, fn: T => Graphic, fillStyle: String = "grey", strokeStyle: String = "black", lineWidth: Int = 1, 
-	framesPerSecond: Double = 0, duration: Double = 0) {
+case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = "grey", strokeStyle: String = "black", lineWidth: Int = 1) {
 	
 	val function = fn.asInstanceOf[(Any => Graphic)]
 
