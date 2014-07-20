@@ -24,6 +24,7 @@ case class MPosY extends Reactive
 case class CTickGetMPos(val fps: Double, val dur: Double) extends Reactive
 case class MClickGetCTime() extends Reactive
 case class MPosGetCTime() extends Reactive
+case class KPressGetCTime(val key: Key.KeyType) extends Reactive
 
 /*
 ** Usage example: Reactor(Reactive.ClockTick(Double, Double), ...)  
@@ -42,7 +43,8 @@ object Reactive {
 
 	def ClockTickGetMousePosition(framesPerSecond: Double, duration: Double) = CTickGetMPos(framesPerSecond, duration)
 	def MouseClickGetClockTime() = MClickGetCTime()
-	def MousePositionGetClockTime() = MPosGetCTime() 
+	def MousePositionGetClockTime() = MPosGetCTime()
+	def KeyPressGetClockTime(key: Key.KeyType) = KPressGetCTime(key) 
 }
 
 /*
