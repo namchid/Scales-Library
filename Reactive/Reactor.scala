@@ -6,24 +6,43 @@ case class Graphic {} //just placeholder for actual Graphic
 object Canvas {} //just a placeholder for actual Canvas
 
 /*
-** Usage example: Reactor(Reactive.ClockTick, ...)  
-** The above creates a reactor that reacts to clock ticks
+** Usage example: Not called directly by user
+*/
+sealed trait Reactive {}
+
+case class CTick(val fps: Double, val dur: Double) extends Reactive
+case class KPress(val key: Key.KeyType) extends Reactive
+case class MClick() extends Reactive
+case class MPos() extends Reactive
+
+
+case class MClickX extends Reactive
+case class MClickY extends Reactive
+case class MPosX extends Reactive
+case class MPosY extends Reactive
+
+case class CTickGetMPos(val fps: Double, val dur: Double) extends Reactive
+case class MClickGetCTime() extends Reactive
+case class MPosGetCTime() extends Reactive
+
+/*
+** Usage example: Reactor(Reactive.ClockTick(Double, Double), ...)  
+** The example above creates a reactor that reacts to clock ticks
 */
 object Reactive {
-	type ReactionType = Int
+	def ClockTick(framesPerSecond: Double, duration: Double) = CTick(framesPerSecond, duration)
+	def KeyPress(key: Key.KeyType) = KPress(key)
+	def MouseClick() = MClick()
+	def MousePosition() = MPos()
 
-	final val ClockTick: ReactionType = 0
-	final val MouseClick: ReactionType = 1
-	final val MousePosition: ReactionType = 2
+	def MouseClickX() = MClickX()
+	def MouseClickY() = MClickY()
+	def MousePositionX() = MPosX()
+	def MousePositionY() = MPosY()
 
-	final val MouseClickX: ReactionType = 3
-	final val MouseClickY: ReactionType = 4
-	final val MousePositionX: ReactionType = 5
-	final val MousePositionY: ReactionType = 6
-
-	final val ClockTickGetMousePosition: ReactionType = 7
-	final val MouseClickGetClockTime: ReactionType = 8
-	final val MousePositionGetClockTime: ReactionType = 9
+	def ClockTickGetMousePosition(framesPerSecond: Double, duration: Double) = CTickGetMPos(framesPerSecond, duration)
+	def MouseClickGetClockTime() = MClickGetCTime()
+	def MousePositionGetClockTime() = MPosGetCTime() 
 }
 
 /*
