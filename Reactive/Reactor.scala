@@ -10,28 +10,27 @@ object Canvas {} //just a placeholder for actual Canvas
 ** The above creates a reactor that reacts to clock ticks
 */
 object Reactive {
-	type Reactive = Int
+	type ReactionType = Int
 
-	final val ClockTick: Reactive = 0
-	final val MouseClick: Reactive = 1
-	final val MousePosition: Reactive = 2
+	final val ClockTick: ReactionType = 0
+	final val MouseClick: ReactionType = 1
+	final val MousePosition: ReactionType = 2
 
-	final val MouseClickX: Reactive = 3
-	final val MouseClickY: Reactive = 4
-	final val MousePositionX: Reactive = 5
-	final val MousePositionY: Reactive = 6
+	final val MouseClickX: ReactionType = 3
+	final val MouseClickY: ReactionType = 4
+	final val MousePositionX: ReactionType = 5
+	final val MousePositionY: ReactionType = 6
 
-	final val ClockTickGetMousePosition: Reactive = 7
-	final val MouseClickGetClockTime: Reactive = 8
-	final val MousePositionGetClockTime: Reactive = 9
+	final val ClockTickGetMousePosition: ReactionType = 7
+	final val MouseClickGetClockTime: ReactionType = 8
+	final val MousePositionGetClockTime: ReactionType = 9
 }
 
 /*
 ** Usage:
 ** @params reaction: a final val from Reactive, such as Reactive.MouseClickGetClockTime
 */
-import Reactive._
-case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = "grey", strokeStyle: String = "black", lineWidth: Int = 1, 
+case class Reactor[T](reaction: Reactive.ReactionType, fn: T => Graphic, fillStyle: String = "grey", strokeStyle: String = "black", lineWidth: Int = 1, 
 	framesPerSecond: Double = 0, duration: Double = 0) {
 	
 	val function = fn.asInstanceOf[(Any => Graphic)]
