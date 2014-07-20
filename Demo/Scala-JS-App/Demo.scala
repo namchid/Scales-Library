@@ -147,7 +147,7 @@ object ScalaJSExample extends js.JSApp {
 
 /////////////////// tehehehehe
     def fnMouse(xy: (Int, Int)): Graphic = {
-      Rectangle(100, 200).translate(xy._1, xy._2)
+      Rectangle(100, 200).top.translate(xy._1, xy._2)
     }
 
     def fnMouseX(x: Int): Graphic = {
