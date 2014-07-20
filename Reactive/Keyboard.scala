@@ -79,7 +79,7 @@ object Key {
 
 //note: not tested on numpad numbers/keys. these probably need wrapping
 import Key._
-case class KeyPressed(key: Key.KeyType) {	
+case class KeyPress(key: Key.KeyType) {	
 	val keyboard = Keyboard.subscribe
 	val timesPressed = Var(0)
 
