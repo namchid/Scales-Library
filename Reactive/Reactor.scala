@@ -99,6 +99,9 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 
 	val changes = Var(0)
 	def countChanges(): Int = changes()
+	def unsubscribe(): Unit = {
+		target().killAll()
+	}
 
 	Obs(target) {
 		val g = function(target())
