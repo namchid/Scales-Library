@@ -17,7 +17,7 @@ object CanvasHandler {
   val height = Canvas.canvas.height
 
   val graphics: Var[List[Graphic]] = Var(Nil)
-  val fillColors: Var[List[String]] = Var(Nil)
+  val fillStyles: Var[List[String]] = Var(Nil)
   val strokeStyles: Var[List[String]] = Var(Nil)
   val lineWidths: Var[List[Int]] = Var(Nil)
 
@@ -29,21 +29,21 @@ object CanvasHandler {
     graphics() = graphics() :+ g 
   }
 
-  def setFillColor(index: Int, color: String): Unit = {
-    fillColors() = fillColors().patch(index, List(color), 1)
+  def setFillColor(index: Int, style: String): Unit = {
+    fillStyles() = fillStyles().patch(index, List(style), 1)
   }
 
-  def setStrokeColor(index: Int, color: String): Unit = {
-    strokeStyles() = strokeStyles().patch(index, List(color), 1)
+  def setStrokeColor(index: Int, style: String): Unit = {
+    strokeStyles() = strokeStyles().patch(index, List(style), 1)
   }
 
   def setWidth(index: Int, width: Int): Unit = {
     lineWidths() = lineWidths().patch(index, List(width), 1)
   }
 
-  def setAll(index: Int, fillColor: String, strokeColor: String, width: Int): Unit = {
-    fillColors() = fillColors().patch(index, List(fillColor), 1)
-    strokeStyles() = strokeStyles().patch(index, List(strokeColor), 1)
+  def setAll(index: Int, fillStyle: String, strokeStyle: String, width: Int): Unit = {
+    fillStyles() = fillStyles().patch(index, List(fillStyle), 1)
+    strokeStyles() = strokeStyles().patch(index, List(strokeStyle), 1)
     lineWidths() = lineWidths().patch(index, List(width), 1)
   }
 
@@ -54,7 +54,7 @@ object CanvasHandler {
   Obs(graphics) {
     ctx.clearRect(0, 0, width, height)
     for(i <- 0 until graphics().length) {
-      ctx.fillStyle = fillColors()(i)
+      ctx.fillStyle = fillStyles()(i)
       ctx.strokeStyle = strokeStyles()(i)
       ctx.lineWidth = lineWidths()(i)
       graphics()(i).render(ctx)
