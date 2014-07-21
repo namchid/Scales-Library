@@ -41,31 +41,33 @@ case class Note(val freq: Double = 0, val vol: Double = 1) {
 	}
 
 	def >(octaves: Int = 1): Note = {
-		//todo
+		val mult = math.pow(2, octaves)
+		Note(freq * mult, vol)
 	}
 
 	def <(octaves: Int = 1): Note = {
-
+		val mult = math.pow(2, octaves)
+		Note(freq / mult, vol)
 	}
 
 	def >>>>: Note = {
-		//todo
+		Note(freq * 16, vol)
 	}
 
 	def <<<<: Note = {
-		//todo
+		Note(freq / 16, vol)
 	}
 
-	def setVolume(vol: Double): Note = {
-		//todo
+	def setVolume(newVolume: Double): Note = {
+		Note(freq, newVolume)
 	}
 
 	def louder(other: Note): Boolean = {
-		//todo
+		this.vol > other.vol
 	}
 
 	def higherFrequency(other: Note): Boolean = {
-		//todo
+		this.freq > other.freq
 	}
 
 	def frequency: Double = freq
