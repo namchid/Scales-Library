@@ -14,9 +14,9 @@ sealed trait Reactive {}
 
 case class CTick(val fps: Double, val dur: Double) extends Reactive
 case class KPress(val key: Key.KeyType) extends Reactive
+case class KPressAny() extends Reactive
 case class MClick() extends Reactive
 case class MPos() extends Reactive
-
 
 case class MClickX() extends Reactive
 case class MClickY() extends Reactive
@@ -27,6 +27,7 @@ case class CTickGetMPos(val fps: Double, val dur: Double) extends Reactive
 case class MClickGetCTime() extends Reactive
 case class MPosGetCTime() extends Reactive
 case class KPressGetCTime(val key: Key.KeyType) extends Reactive
+case class KPressAnyGetCTime() extends Reactive
 
 /*
 ** Usage example: Reactor(Reactive.ClockTick(Double, Double), ...)  
@@ -35,6 +36,7 @@ case class KPressGetCTime(val key: Key.KeyType) extends Reactive
 object Reactive {
 	def ClockTick(framesPerSecond: Double, duration: Double) = CTick(framesPerSecond, duration)
 	def KeyPress(key: Key.KeyType) = KPress(key)
+	def KeyPress() = KPressAny()
 	def MouseClick() = MClick()
 	def MousePosition() = MPos()
 
@@ -46,7 +48,8 @@ object Reactive {
 	def ClockTickGetMousePosition(framesPerSecond: Double, duration: Double) = CTickGetMPos(framesPerSecond, duration)
 	def MouseClickGetClockTime() = MClickGetCTime()
 	def MousePositionGetClockTime() = MPosGetCTime()
-	def KeyPressGetClockTime(key: Key.KeyType) = KPressGetCTime(key) 
+	def KeyPressGetClockTime(key: Key.KeyType) = KPressGetCTime(key)
+	def KeyPressGetClockTime() = KPressAnyGetCTime() 
 }
 
 /*
@@ -63,6 +66,9 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 
 		case x: KPress =>
 			KeyPress(x.key).subscribe
+
+		case x: KPressAny =>
+			Keyboard.subscribe
 
 		case x: MClick => 
 			MouseClick.subscribe
@@ -113,6 +119,16 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 
 		case x: KPressGetCTime => {
 			val key_sub = KeyPress(x.key).subscribe
+			val startTime = new js.Date().getTime()
+			val rx = Var(0.0)
+			Obs(key_sub) {
+				rx() = (new js.Date().getTime() - startTime) / 1000
+			}
+			rx
+		}
+
+		case x: KPressAnyGetCTime => {
+			val key_sub = Keyboard.subscribe
 			val startTime = new js.Date().getTime()
 			val rx = Var(0.0)
 			Obs(key_sub) {
