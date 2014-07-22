@@ -16,10 +16,10 @@ case class MClick() extends Reactive
 case class MPos() extends Reactive
 
 
-case class MClickX extends Reactive
-case class MClickY extends Reactive
-case class MPosX extends Reactive
-case class MPosY extends Reactive
+case class MClickX() extends Reactive
+case class MClickY() extends Reactive
+case class MPosX() extends Reactive
+case class MPosY() extends Reactive
 
 case class CTickGetMPos(val fps: Double, val dur: Double) extends Reactive
 case class MClickGetCTime() extends Reactive
