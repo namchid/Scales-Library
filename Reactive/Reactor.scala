@@ -67,14 +67,20 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 		case x: KPress =>
 			KeyPress(x.key).subscribe
 
-		case x: KPressAny =>
-			Keyboard.subscribe
+		case x: KPressAny => {
+			val key_sub = Keyboard.subscribe
+			val rx = Var(0)
+			Obs(key_sub) {
+				rx() += 1
+			}
+			rx
+		}
 
 		case x: MClick => 
 			MouseClick.subscribe
 		
 		case x: MPos => 
-			MouseClick.subscribe
+			MousePosition.subscribe
 		
 		case x: MClickX => 
 			MouseClick.subscribeX
