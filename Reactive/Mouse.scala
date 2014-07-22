@@ -1,5 +1,10 @@
-import scalatags.JsDom.all._
+package edu.depauw.scales.reactive
+
+import scala.scalajs.js
+import js.annotation.JSExport
+import org.scalajs.dom
 import rx._
+
 
 /*
 ** Usage: MouseClick.subscribe()
@@ -41,7 +46,7 @@ object MousePosition {
 	listen()
 
 	def subscribe(): Rx[(Int, Int)] = xy
-	def subscribeX(): RX[Int] = x
+	def subscribeX(): Rx[Int] = x
 	def subscribeY(): Rx[Int] = y
 }
 

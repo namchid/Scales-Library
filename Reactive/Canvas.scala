@@ -1,5 +1,11 @@
-import scalatags.JsDom.all._
+package edu.depauw.scales.reactive
+
+import scala.scalajs.js
+import js.annotation.JSExport
+import org.scalajs.dom
 import rx._
+
+import edu.depauw.scales.graphics._
 
 object Canvas {
   val canvas = dom.document.createElement("canvas").asInstanceOf[dom.HTMLCanvasElement]

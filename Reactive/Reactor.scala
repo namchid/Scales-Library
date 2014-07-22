@@ -1,9 +1,11 @@
-import scalatags.JsDom.all._
+package edu.depauw.scales.reactive
+
+import scala.scalajs.js
+import js.annotation.JSExport
+import org.scalajs.dom
 import rx._
 
-case class Graphic {} //just placeholder for actual Graphic
-
-object Canvas {} //just a placeholder for actual Canvas
+import edu.depauw.scales.graphics._
 
 /*
 ** Usage example: Not called directly by user
@@ -81,10 +83,10 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 			MousePosition.subscribeY
 		
 		case x: CTickGetMPos => {
-			val clock_sub = Timer(framesPerSecond, duration).subscribe
-			val rx = Var(MouseMove.xy())
+			val clock_sub = Timer(x.fps, x.dur).subscribe
+			val rx = Var(MousePosition.xy())
 			Obs(clock_sub) {
-				rx() = MouseMove.xy()
+				rx() = MousePosition.xy()
 			}
 			rx
 		}
@@ -132,7 +134,7 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 	val changes = Var(0)
 	def countChanges(): Int = changes()
 	def unsubscribe(): Unit = {
-		target().killAll()
+		target.killAll()
 	}
 
 	Obs(target) {

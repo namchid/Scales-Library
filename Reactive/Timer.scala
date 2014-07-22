@@ -1,4 +1,8 @@
-import scalatags.JsDom.all._
+package edu.depauw.scales.reactive
+
+import scala.scalajs.js
+import js.annotation.JSExport
+import org.scalajs.dom
 import rx._
 
 /*

@@ -1,5 +1,10 @@
-import scalatags.JsDom.all._
+package edu.depauw.scales.reactive
+
+import scala.scalajs.js
+import js.annotation.JSExport
+import org.scalajs.dom
 import rx._
+
 
 /*
 ** Usage: Keyboard.subscribe()
@@ -16,7 +21,7 @@ object Keyboard {
 
 	listen()
 
-	def subscribe(): Rx[Char] = keyPressedCode
+	def subscribe(): Rx[Int] = keyPressedCode
 }
 
 /*
