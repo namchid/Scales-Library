@@ -5,7 +5,7 @@ object Audio {
 	def getAudioContext(): js.Dynamic = js.Dynamic.newInstance(js.Dynamic.global.AudioContext)
 
 	type AudioRampOption: String
-	final val Ramp: AudioRampOption = "ramp"
+	final val ExponentialRamp: AudioRampOption = "ramp"
 	final val LinearRamp: AudioRampOption = "linear"
 	final val NoRamp: AudioRampOption = "none"
 }
@@ -20,16 +20,44 @@ case class Note(val freq: Double = 0, val vol: Double = 1) {
 	}
 
 	def play(time: Double = 0): Unit = {
-		//todo
+		val oscillatorNode = ctx.createOscillator()
+		val gainNode = ctx.createGain()
+
+		oscillatorNode.frequency.value = freq
+		gainNode.gain.value = vol
+
+		oscillatorNode.connect(gainNode)
+		gainNode.connect(ctx.destination)
 	}
 
 	def stop(delay: Double = 0): Unit = {
-		//todo
+		if(currentNode() != null) {
+			currentNode().stop(ctx.currentTime + dur)
+			currentNode() = null
+		}
 	}
 
 	import Audio._
 	def playRamp(start: Double, duration: Double, targetFrequency: Double = 0, rampOption: AudioRampOption = Audio.NoRamp): Unit = {
-		//todo
+		val oscillatorNode = ctx.createOscillator()
+		val gainNode = ctx.createGain()
+
+		oscillatorNode.frequency.value = freq
+		gainNode.gain.value = vol
+
+		rampOption match {
+			case Audio.NoRamp =>
+			case Audio.LinearRamp =>
+				gainNode.gain.linearRampToValueAtTime(targetFrequency, start + duration)
+			case Audio.ExponentialRamp =>
+				if(targetFrequency > freq) gainNode.gain.exponentialRampToValueAtTime(target, start + dur)
+		}
+
+		oscillatorNode.connect(gainNode)
+		gainNode.connect(ctx.destination)
+
+		oscillatorNode.start(start)
+		oscillatorNode.stop(start + dur)
 	}
 
 	def playBeats(start: Double = 0, times: Int = 1, beatDuration: Double = .2, beatPause: Double = .2): Unit = {
