@@ -93,15 +93,6 @@ case class Note(option: Audio, freq: Double = 170, start: Double = 0, vol: Doubl
 	val note = Sound(freq, vol)
 	
 	option match {
-		// case x: Rampless =>
-		// 	note.play(start, x.duration)
-		// case x: LinRamp =>
-		// 	note.playRamp(start, x.duration, x.targetFreq, "linear")
-		// case x: ExpRamp =>
-		// 	note.playRamp(start, x.duration, x.targetFreq, "exponential")
-		// case x: XBeats =>
-		// 	note.playBeats(start, x.times, x.beatDuration, x.beatPause)
-		// case _ =>
 		case x: Rampless =>
 			note.play(start, duration)
 		case x: LinRamp =>
