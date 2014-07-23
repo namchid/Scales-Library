@@ -42,7 +42,7 @@ sealed case class Sound(freq: Double = 0, vol: Double = 1) {
 
 	def play(time: Double, dur: Double): Unit = {
 		Audio.times() += 1
-		if(Audio.times() < 3) {
+		if(Audio.times() < 5) {
 			initContext
 			Audio.times() = 0
 		}
@@ -62,7 +62,7 @@ sealed case class Sound(freq: Double = 0, vol: Double = 1) {
 
 	def playRamp(start: Double = 0, duration: Double = 1, targetFreq: Double = 0, rampOption: String = "linear"): Unit = {
 		Audio.times() += 1
-		if(Audio.times() < 3) {
+		if(Audio.times() < 5) {
 			initContext
 			Audio.times() = 0
 		}
@@ -91,7 +91,7 @@ sealed case class Sound(freq: Double = 0, vol: Double = 1) {
 
 	def playBeats(start: Double = 0, times: Int = 1, beatDuration: Double = .5, beatPause: Double = .5): Unit = {
 		Audio.times() += 1
-		if(Audio.times() < 3) {
+		if(Audio.times() < 5) {
 			initContext
 			Audio.times() = 0
 		}
