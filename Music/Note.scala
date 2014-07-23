@@ -1,25 +1,37 @@
-import scalatags.JsDom.all._
-import rx._ 
+package edu.depauw.scales.music
+
+import scala.scalajs.js
+import js.annotation.JSExport
+import org.scalajs.dom
+import rx._
+
+trait Scales {}
+
+sealed trait Audio {}
+
+case class ExpRamp(val duration: Double, val targetFreq: Double) extends Audio
+case class LinRamp(val duration: Double, targetFreq: Double) extends Audio
+case class Rampless(val duration: Double) extends Audio
+case class XBeats(val times: Int, val beatDuration: Double, val beatPause: Double) extends Audio
 
 object Audio {
-	def getAudioContext(): js.Dynamic = js.Dynamic.newInstance(js.Dynamic.global.AudioContext)
+	def getAudioContext(): js.Dynamic = js.Dynamic.newInstance(js.Dynamic.global.AudioContext)()
 
-	type AudioRampOption: String
-	final val ExponentialRamp: AudioRampOption = "ramp"
-	final val LinearRamp: AudioRampOption = "linear"
-	final val NoRamp: AudioRampOption = "none"
+	def ExponentialRamp(targetFreq: Double, duration: Double = 1) = ExpRamp(duration, targetFreq)
+	def LinearRamp(targetFreq: Double, duration: Double = 1) = LinRamp(duration, targetFreq)
+	def NoRamp(duration: Double = .5) = Rampless(duration)
+	def Beats(times: Int, beatDuration: Double, beatPause: Double) = XBeats(times, beatDuration, beatPause)
 }
 
-case class Note(val freq: Double = 0, val vol: Double = 1) {
-	val ctx = Audio.getAudioContext()
-	val currentNode: Var[js.Dynamic] = Var(null)
+sealed case class Sound(freq: Double = 0, vol: Double = 1) {
+	val ctx = js.Dynamic.newInstance(js.Dynamic.global.AudioContext)() //Audio.getAudioContext()
 
 	def currentTime(): Double = {
 		val time = ctx.currentTime.toString()
 		return time.toDouble
 	}
 
-	def play(time: Double = 0): Unit = {
+	def play(time: Double, dur: Double): Unit = {
 		val oscillatorNode = ctx.createOscillator()
 		val gainNode = ctx.createGain()
 
@@ -28,66 +40,83 @@ case class Note(val freq: Double = 0, val vol: Double = 1) {
 
 		oscillatorNode.connect(gainNode)
 		gainNode.connect(ctx.destination)
+
+		oscillatorNode.start(time)
+		oscillatorNode.stop(ctx.currentTime + dur)
 	}
 
-	def stop(delay: Double = 0): Unit = {
-		if(currentNode() != null) {
-			currentNode().stop(ctx.currentTime + dur)
-			currentNode() = null
-		}
-	}
-
-	import Audio._
-	def playRamp(start: Double, duration: Double, targetFrequency: Double = 0, rampOption: AudioRampOption = Audio.NoRamp): Unit = {
+	def playRamp(start: Double = 0, duration: Double = 1, targetFreq: Double = 0, rampOption: String = "linear"): Unit = {
 		val oscillatorNode = ctx.createOscillator()
 		val gainNode = ctx.createGain()
 
 		oscillatorNode.frequency.value = freq
-		gainNode.gain.value = vol
+		val startTime = currentTime() + start
+		gainNode.gain.setValueAtTime(vol, startTime)
 
 		rampOption match {
-			case Audio.NoRamp =>
-			case Audio.LinearRamp =>
-				gainNode.gain.linearRampToValueAtTime(targetFrequency, start + duration)
-			case Audio.ExponentialRamp =>
-				if(targetFrequency > freq) gainNode.gain.exponentialRampToValueAtTime(target, start + dur)
+			case "linear" => 
+				gainNode.gain.linearRampToValueAtTime(targetFreq, startTime + duration)
+			case "exponential" => 
+				if(targetFreq > freq) 
+					gainNode.gain.exponentialRampToValueAtTime(targetFreq, startTime + duration)
 		}
+
+		oscillatorNode.start(startTime)
+		oscillatorNode.stop(startTime + duration)
 
 		oscillatorNode.connect(gainNode)
 		gainNode.connect(ctx.destination)
-
-		oscillatorNode.start(start)
-		oscillatorNode.stop(start + dur)
 	}
 
-	def playBeats(start: Double = 0, times: Int = 1, beatDuration: Double = .2, beatPause: Double = .2): Unit = {
-		//todo
+	def playBeats(start: Double = 0, times: Int = 1, beatDuration: Double = .5, beatPause: Double = .5): Unit = {
+		playB(beatDuration, beatPause, 0, times, currentTime() + start)
 	}
 
-	private def playBeatsHelper(beatDuration: Double, beatPause: Double, timesPlayed: Int, totalTimes: Int, currTime: Double): Unit = {
-		//todo
+	private def playB(beatDuration: Double, beatPause: Double, timesPlayed: Int, xTimes: Int, currTime: Double): Unit = {
+		(timesPlayed == xTimes) match {
+			case true =>
+			case false =>
+				play(currTime, currTime + beatDuration)
+				playB(beatDuration, beatPause, timesPlayed + 1, xTimes, currTime + beatDuration + beatPause)
+		}
+	}
+
+}
+
+case class Note(option: Audio, freq: Double = 170, start: Double = 0, vol: Double = 1) extends Scales {
+	val note = Sound(freq, vol)
+	
+	option match {
+		case x: Rampless =>
+			note.play(start, x.duration)
+		case x: LinRamp =>
+			note.playRamp(start, x.duration, x.targetFreq, "linear")
+		case x: ExpRamp =>
+			note.playRamp(start, x.duration, x.targetFreq, "exponential")
+		case x: XBeats =>
+			note.playBeats(start, x.times, x.beatDuration, x.beatPause)
 	}
 
 	def >(octaves: Int = 1): Note = {
 		val mult = math.pow(2, octaves)
-		Note(freq * mult, vol)
+		Note(option, freq * mult, start, vol)
 	}
 
 	def <(octaves: Int = 1): Note = {
 		val mult = math.pow(2, octaves)
-		Note(freq / mult, vol)
+		Note(option, freq / mult, start, vol)
 	}
 
-	def >>>>: Note = {
-		Note(freq * 16, vol)
+	def >>>> : Note = {
+		Note(option, freq * 16, start, vol)
 	}
 
-	def <<<<: Note = {
-		Note(freq / 16, vol)
+	def <<<< : Note = {
+		Note(option, freq / 16, start, vol)
 	}
 
 	def setVolume(newVolume: Double): Note = {
-		Note(freq, newVolume)
+		Note(option, freq, start, newVolume)
 	}
 
 	def louder(other: Note): Boolean = {
@@ -103,16 +132,31 @@ case class Note(val freq: Double = 0, val vol: Double = 1) {
 	def volume: Double = vol
 }
 
-//'s' after note indicates sharp
-object C extends Note(16.35)
-object Cs extends Note(17.32)
-object D extends Note(18.35)
-object Ds extends Note(19.45)
-object E extends Note(20.60)
-object F extends Note(21.83)
-object Fs extends Note(23.12)
-object G extends Note(24.50)
-object Gs extends Note(25.96)
-object A extends Note(27.50)
-object As extends Note(29.14)
-object B extends Note(30.87)
+case class NoteSeq(notes: Note*) extends Scales {
+	for(n <- notes) {
+		val note = Sound(n.freq, n.vol)
+		n.option match {
+			case x: Rampless =>
+				note.play(n.start, x.duration)
+			case x: LinRamp =>
+				note.playRamp(n.start, x.duration, x.targetFreq, "linear")
+			case x: ExpRamp =>
+				note.playRamp(n.start, x.duration, x.targetFreq, "exponential")
+			case x: XBeats =>
+				note.playBeats(n.start, x.times, x.beatDuration, x.beatPause)
+		}
+	}
+}
+
+object C extends Note(Audio.NoRamp(1), 16.35)
+object Cs extends Note(Audio.NoRamp(1), 17.32)
+object D extends Note(Audio.NoRamp(1), 18.35)
+object Ds extends Note(Audio.NoRamp(1), 19.45)
+object E extends Note(Audio.NoRamp(1), 20.60)
+object F extends Note(Audio.NoRamp(1), 21.83)
+object Fs extends Note(Audio.NoRamp(1), 23.12)
+object G extends Note(Audio.NoRamp(1), 24.50)
+object Gs extends Note(Audio.NoRamp(1), 25.96)
+object A extends Note(Audio.NoRamp(1), 27.50)
+object As extends Note(Audio.NoRamp(1), 29.14)
+object B extends Note(Audio.NoRamp(1), 30.87)

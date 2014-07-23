@@ -6,6 +6,7 @@ import org.scalajs.dom
 import rx._
 
 import edu.depauw.scales.graphics._
+import edu.depauw.scales.music._
 
 /*
 ** Usage example: Not called directly by user
@@ -56,9 +57,9 @@ object Reactive {
 ** Usage example: Reactor(Reactive.ClockTick(2, 10), fn, "red", "blue", 0)
 ** @params reaction: a final val from Reactive, such as Reactive.MouseClickGetClockTime
 */
-case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = "grey", strokeStyle: String = "black", lineWidth: Int = 1) {
+case class Reactor[T, S](reaction: Reactive, fn: T => Scales, fillStyle: String = "grey", strokeStyle: String = "black", lineWidth: Int = 1) {
 	
-	val function = fn.asInstanceOf[(Any => Graphic)]
+	val function = fn.asInstanceOf[(Any => Scales)]
 
 	val target: Rx[Any] = reaction match {
 		case x: CTick => 
@@ -134,7 +135,7 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 		}
 
 		case x: KPressAnyGetCTime => {
-			val key_sub = Keyboard.subscribe
+			val key_sub = Keyboard.subscribe //rx[Int]
 			val startTime = new js.Date().getTime()
 			val rx = Var(0.0)
 			Obs(key_sub) {
@@ -160,13 +161,18 @@ case class Reactor[T](reaction: Reactive, fn: T => Graphic, fillStyle: String = 
 	}
 
 	Obs(target) {
-		val g = function(target())
+		val result = function(target())
 		changes() += 1
-		if(index() == -1) {
-			index() = CanvasHandler.getIndex
-			initGraphic(g)
-		} else {
-			CanvasHandler.updateGraphic(index(), g)
+
+		result match {
+			case x: Graphic =>
+				if(index() == -1) {
+					index() = CanvasHandler.getIndex
+					initGraphic(result.asInstanceOf[Graphic])
+				} else {
+					CanvasHandler.updateGraphic(index(), result.asInstanceOf[Graphic])
+				}
+			case x: Note => //do nothing because note plays itself automatically
 		}
 	}
 }

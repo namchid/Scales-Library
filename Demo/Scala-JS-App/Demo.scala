@@ -7,6 +7,7 @@ import rx._
 
 import edu.depauw.scales.graphics._
 import edu.depauw.scales.reactive._
+import edu.depauw.scales.music._
 import Base._
 
 
@@ -44,7 +45,7 @@ object ScalaJSExample extends js.JSApp {
     }
 
     def fnPos(xy: (Int, Int)): Graphic = {
-      Ellipse(25, 25).translate(xy._1 - 5, xy._2 - 145)
+      Ellipse(25, 25).translate(xy._1 - 5, xy._2 - 155)
     }
 
     import Reactive._
@@ -52,18 +53,31 @@ object ScalaJSExample extends js.JSApp {
     // Reactor(ClockTick(2, 20), fnTime, "red")
     // Reactor(KeyPress(Key.Space), fnKey, "orange", "grey", 5)
     // Reactor(KeyPress, fnKeyAny, "blue", "magenta")
-    // Reactor(MousePosition, fnPos, "rgb(65, 123, 142)", "black", 3)
+     Reactor(MousePosition, fnPos, "rgb(65, 123, 142)", "black", 3)
 
     // Reactor(MouseClickX, fnMouseX, "blue")
     // Reactor(MouseClickY, fnMouseY, "rgb(70, 200, 70)")
     // Reactor(MousePositionX, fnMouseX, "rgb(133, 60, 200)")
     // Reactor(MousePositionY, fnMouseY, "rgb(155, 140, 10)")
 
-    Reactor(ClockTickGetMousePosition(1, 100), fnPos, "yellow", "green", 4)
-    Reactor(MouseClickGetClockTime, fnTime, "magenta", "grey", 3)
-    Reactor(MousePositionGetClockTime, fnTime, "rgb(200, 200, 55)", "white", 0)
-    Reactor(KeyPressGetClockTime(Key.A), fnTime, "black", "blue")
-    Reactor(KeyPressGetClockTime, fnTime, "green") //todo
+    // Reactor(ClockTickGetMousePosition(1, 100), fnPos, "yellow", "green", 4)
+    // Reactor(MouseClickGetClockTime, fnTime, "magenta", "grey", 3)
+    // Reactor(MousePositionGetClockTime, fnTime, "rgb(200, 200, 55)", "white", 0)
+    // Reactor(KeyPressGetClockTime(Key.A), fnTime, "black", "blue")
+    // Reactor(KeyPressGetClockTime, fnTime, "green") //todo
+    
+    import Audio._
+    
+    def fnNote(x: Int): NoteSeq = {
+      val note1 = Note(NoRamp(1), x)
+      val note2 = Note(LinearRamp(0, 2), 400, 1)
+      NoteSeq(note1, note2)
+    }
+
+    Reactor(MouseClickX, fnNote)
+    // Note(LinearRamp(0, 2), 400, 3)
+    // Note(ExponentialRamp(200, 2), 170, 6)
+    // Note(Beats(5, .5, .5), 300, 8)
 
   }
 }
