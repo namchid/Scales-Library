@@ -29,7 +29,6 @@ sealed case class Sound(freq: Double = 0, vol: Double = 1) {
 	initContext()
 
 	def initContext(): Unit = {
-		dom.alert("times played: " + Audio.times())
 		ctx() = null
 		ctx() = Audio.getAudioContext //js.Dynamic.newInstance(js.Dynamic.global.AudioContext)() //
 		Audio.times() = 0
