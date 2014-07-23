@@ -15,7 +15,8 @@ case class Rampless(val duration: Double) extends Audio
 case class XBeats(val times: Int, val beatDuration: Double, val beatPause: Double) extends Audio
 
 object Audio {
-	def getAudioContext(): js.Dynamic = js.Dynamic.newInstance(js.Dynamic.global.AudioContext)()
+	val getAudioContext: js.Dynamic = js.Dynamic.newInstance(js.Dynamic.global.AudioContext)()
+	val times = Var(0)
 
 	def ExponentialRamp(targetFreq: Double, duration: Double = 1) = ExpRamp(duration, targetFreq)
 	def LinearRamp(targetFreq: Double, duration: Double = 1) = LinRamp(duration, targetFreq)
@@ -24,30 +25,50 @@ object Audio {
 }
 
 sealed case class Sound(freq: Double = 0, vol: Double = 1) {
-	val ctx = js.Dynamic.newInstance(js.Dynamic.global.AudioContext)() //Audio.getAudioContext()
+	val ctx: Var[js.Dynamic] = Var(null)
+	initContext()
 
+	def initContext(): Unit = {
+		dom.alert("times played: " + Audio.times())
+		ctx() = null
+		ctx() = Audio.getAudioContext //js.Dynamic.newInstance(js.Dynamic.global.AudioContext)() //
+		Audio.times() = 0
+	}
+	
 	def currentTime(): Double = {
-		val time = ctx.currentTime.toString()
+		val time = ctx().currentTime.toString()
 		return time.toDouble
 	}
 
 	def play(time: Double, dur: Double): Unit = {
-		val oscillatorNode = ctx.createOscillator()
-		val gainNode = ctx.createGain()
+		Audio.times() += 1
+		if(Audio.times() < 3) {
+			initContext
+			Audio.times() = 0
+		}
+
+		val oscillatorNode = ctx().createOscillator()
+		val gainNode = ctx().createGain()
 
 		oscillatorNode.frequency.value = freq
 		gainNode.gain.value = vol
 
 		oscillatorNode.connect(gainNode)
-		gainNode.connect(ctx.destination)
+		gainNode.connect(ctx().destination)
 
 		oscillatorNode.start(time)
-		oscillatorNode.stop(ctx.currentTime + dur)
+		oscillatorNode.stop(ctx().currentTime + dur)
 	}
 
 	def playRamp(start: Double = 0, duration: Double = 1, targetFreq: Double = 0, rampOption: String = "linear"): Unit = {
-		val oscillatorNode = ctx.createOscillator()
-		val gainNode = ctx.createGain()
+		Audio.times() += 1
+		if(Audio.times() < 3) {
+			initContext
+			Audio.times() = 0
+		}
+
+		val oscillatorNode = ctx().createOscillator()
+		val gainNode = ctx().createGain()
 
 		oscillatorNode.frequency.value = freq
 		val startTime = currentTime() + start
@@ -65,10 +86,15 @@ sealed case class Sound(freq: Double = 0, vol: Double = 1) {
 		oscillatorNode.stop(startTime + duration)
 
 		oscillatorNode.connect(gainNode)
-		gainNode.connect(ctx.destination)
+		gainNode.connect(ctx().destination)
 	}
 
 	def playBeats(start: Double = 0, times: Int = 1, beatDuration: Double = .5, beatPause: Double = .5): Unit = {
+		Audio.times() += 1
+		if(Audio.times() < 3) {
+			initContext
+			Audio.times() = 0
+		}
 		playB(beatDuration, beatPause, 0, times, currentTime() + start)
 	}
 
