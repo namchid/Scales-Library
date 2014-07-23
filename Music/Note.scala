@@ -9,18 +9,18 @@ trait Scales {}
 
 sealed trait Audio {}
 
-case class ExpRamp(val duration: Double, val targetFreq: Double) extends Audio
-case class LinRamp(val duration: Double, targetFreq: Double) extends Audio
-case class Rampless(val duration: Double) extends Audio
+case class ExpRamp(val targetFreq: Double) extends Audio
+case class LinRamp(targetFreq: Double) extends Audio
+case class Rampless() extends Audio
 case class XBeats(val times: Int, val beatDuration: Double, val beatPause: Double) extends Audio
 
 object Audio {
 	val audioContext: js.Dynamic = js.Dynamic.newInstance(js.Dynamic.global.AudioContext)()
 	val times = Var(0)
 
-	def ExponentialRamp(targetFreq: Double, duration: Double = 1) = ExpRamp(duration, targetFreq)
-	def LinearRamp(targetFreq: Double, duration: Double = 1) = LinRamp(duration, targetFreq)
-	def NoRamp(duration: Double = .5) = Rampless(duration)
+	def ExponentialRamp(targetFreq: Double) = ExpRamp(targetFreq)
+	def LinearRamp(targetFreq: Double) = LinRamp(targetFreq)
+	def NoRamp() = Rampless()
 	def Beats(times: Int, beatDuration: Double, beatPause: Double) = XBeats(times, beatDuration, beatPause)
 }
 
@@ -89,16 +89,25 @@ sealed case class Sound(freq: Double = 0, vol: Double = 1) {
 
 }
 
-case class Note(option: Audio, freq: Double = 170, start: Double = 0, vol: Double = 1) extends Scales {
+case class Note(option: Audio, freq: Double = 170, start: Double = 0, vol: Double = 1, duration: Double = 1) extends Scales {
 	val note = Sound(freq, vol)
 	
 	option match {
+		// case x: Rampless =>
+		// 	note.play(start, x.duration)
+		// case x: LinRamp =>
+		// 	note.playRamp(start, x.duration, x.targetFreq, "linear")
+		// case x: ExpRamp =>
+		// 	note.playRamp(start, x.duration, x.targetFreq, "exponential")
+		// case x: XBeats =>
+		// 	note.playBeats(start, x.times, x.beatDuration, x.beatPause)
+		// case _ =>
 		case x: Rampless =>
-			note.play(start, x.duration)
+			note.play(start, duration)
 		case x: LinRamp =>
-			note.playRamp(start, x.duration, x.targetFreq, "linear")
+			note.playRamp(start, duration, x.targetFreq, "linear")
 		case x: ExpRamp =>
-			note.playRamp(start, x.duration, x.targetFreq, "exponential")
+			note.playRamp(start, duration, x.targetFreq, "exponential")
 		case x: XBeats =>
 			note.playBeats(start, x.times, x.beatDuration, x.beatPause)
 		case _ =>
@@ -155,15 +164,15 @@ case class NoteSeq(notes: Note*) extends Scales {
 	// }
 }
 
-object C extends Note(Audio.NoRamp(1), 16.35)
-object Cs extends Note(Audio.NoRamp(1), 17.32)
-object D extends Note(Audio.NoRamp(1), 18.35)
-object Ds extends Note(Audio.NoRamp(1), 19.45)
-object E extends Note(Audio.NoRamp(1), 20.60)
-object F extends Note(Audio.NoRamp(1), 21.83)
-object Fs extends Note(Audio.NoRamp(1), 23.12)
-object G extends Note(Audio.NoRamp(1), 24.50)
-object Gs extends Note(Audio.NoRamp(1), 25.96)
-object A extends Note(Audio.NoRamp(1), 27.50)
-object As extends Note(Audio.NoRamp(1), 29.14)
-object B extends Note(Audio.NoRamp(1), 30.87)
+object C extends Note(Audio.NoRamp, 16.35)
+object Cs extends Note(Audio.NoRamp, 17.32)
+object D extends Note(Audio.NoRamp, 18.35)
+object Ds extends Note(Audio.NoRamp, 19.45)
+object E extends Note(Audio.NoRamp, 20.60)
+object F extends Note(Audio.NoRamp, 21.83)
+object Fs extends Note(Audio.NoRamp, 23.12)
+object G extends Note(Audio.NoRamp, 24.50)
+object Gs extends Note(Audio.NoRamp, 25.96)
+object A extends Note(Audio.NoRamp, 27.50)
+object As extends Note(Audio.NoRamp, 29.14)
+object B extends Note(Audio.NoRamp, 30.87)
