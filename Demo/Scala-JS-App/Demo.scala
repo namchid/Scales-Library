@@ -44,16 +44,31 @@ object ScalaJSExample extends js.JSApp {
       Ellipse(25, 25).translate(x * 10, x * 10)
     }
 
+    val num = Var(0)
+    // val index = CanvasHandler.getIndex()
+
     def fnPos(xy: (Int, Int)): Graphic = {
+      // num() += 1
+      // if(num() % 2 == 0) CanvasHandler.setFillColor(index, "green")
+      // else CanvasHandler.setFillColor(index, "yellow")
+      
+      val idNum = CanvasHandler.getId("reactor1")
+      num() += 1
+      if(num() % 2 == 0) CanvasHandler.setFillColor(idNum, "blue")
+      else CanvasHandler.setFillColor(idNum, "magenta")
+
       Ellipse(25, 25).translate(xy._1 - 5, xy._2 - 155)
     }
 
     import Reactive._
+    // val reactor1 = Reactor(Reactive.MousePosition, fnPos, "rgb(65, 123, 142)", "black", 3)
+    Reactor(Reactive.MousePosition, fnPos, "rgb(65, 123, 142)", "black", 3, "reactor1")
+    
     // Reactor(MouseClick, fnMouse, "green")
     // Reactor(ClockTick(2, 20), fnTime, "red")
     // Reactor(KeyPress(Key.Space), fnKey, "orange", "grey", 5)
     // Reactor(KeyPress, fnKeyAny, "blue", "magenta")
-     Reactor(MousePosition, fnPos, "rgb(65, 123, 142)", "black", 3)
+   
 
     // Reactor(MouseClickX, fnMouseX, "blue")
     // Reactor(MouseClickY, fnMouseY, "rgb(70, 200, 70)")
@@ -79,9 +94,8 @@ object ScalaJSExample extends js.JSApp {
       Note(NoRamp, x, 0)
     }
 
-    //Reactor(MouseClickX, fnNote)
-    //Reactor(MouseClickX, fnSingleNote)
-    Reactor(MouseClickY, fnNote)
+    // Reactor(MouseClickX, fnNote)
+    Reactor(MouseClickX, fnSingleNote)
     // Note(LinearRamp(0, 2), 400, 3)
     // Note(ExponentialRamp(200, 2), 170, 6)
     // Note(Beats(5, .5, .5), 300, 8)
