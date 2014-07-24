@@ -45,6 +45,7 @@ object ScalaJSExample extends js.JSApp {
         setFillColor(idNum, "green")
         Ellipse(37.5, 37.5).translate(200, 100)
       } else if(t.toInt % 2 == 0) {
+        // setFillColor(idNum, "rgb(211, 74, 10)")
         setFillColor(idNum, "yellow")
         Rectangle(56.25, 56.25).translate(200, 100)
       } else {
@@ -53,9 +54,26 @@ object ScalaJSExample extends js.JSApp {
       }
     }
 
+    def fnMove(t: Double): Graphic = {
+      val idNum = getId("mover")
+
+      if(t.toInt < 5) {
+        setFillColor(idNum, "rgb(211, 139, 105)")
+      } else if(t.toInt < 10) {
+        setFillColor(idNum, "purple")
+      } else if(t.toInt < 15) {
+        setFillColor(idNum, "rgb(15, 25, 160)")
+      } else {
+        setFillColor(idNum, "rgb(20, 166, 25)")
+      }
+      Ellipse(70, 40).translate(t * 10, 200)
+    }
+
 
     Reactor(ClockTick(1, 20), fnBlueTime, "grey", "black", 5, "blues")
     Reactor(ClockTick(1, 21), fnChangeShape, "grey", "black", 5, "shaper")
+    Reactor(ClockTick(1, 20), fnMove, "grey", "white", 0, "mover")
+
 
   }
 }
