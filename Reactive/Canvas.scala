@@ -27,7 +27,7 @@ object CanvasHandler {
   val strokeStyles: Var[List[String]] = Var(Nil)
   val lineWidths: Var[List[Int]] = Var(Nil)
 
-  val ids: Var[Map[String, Int]] = Var(Map()) //added
+  val ids: Var[Map[String, Int]] = Var(Map()) 
 
   def getIndex(): Int = {
     return graphics().size
@@ -49,23 +49,20 @@ object CanvasHandler {
     lineWidths() = lineWidths().patch(index, List(width), 1)
   }
 
-  //added
   def setId(index: Int, id: String): Unit = {
     ids() + (id -> index)
   }
 
-  //added
   def getId(id: String): Int = {
     if(!ids().isDefinedAt(id)) return -1
     else ids()(id)
   }
 
-  //changed
   def setAll(index: Int, fillStyle: String, strokeStyle: String, width: Int, id: String = ""): Unit = {
     fillStyles() = fillStyles().patch(index, List(fillStyle), 1)
     strokeStyles() = strokeStyles().patch(index, List(strokeStyle), 1)
     lineWidths() = lineWidths().patch(index, List(width), 1)
-    ids() + (id -> index) //added
+    ids() + (id -> index)
   }
 
   def updateGraphic(index: Int, g: Graphic): Unit = {

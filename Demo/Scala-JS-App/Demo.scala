@@ -45,13 +45,7 @@ object ScalaJSExample extends js.JSApp {
     }
 
     val num = Var(0)
-    // val index = CanvasHandler.getIndex()
-
-    def fnPos(xy: (Int, Int)): Graphic = {
-      // num() += 1
-      // if(num() % 2 == 0) CanvasHandler.setFillColor(index, "green")
-      // else CanvasHandler.setFillColor(index, "yellow")
-      
+    def fnPos(xy: (Int, Int)): Graphic = {      
       val idNum = CanvasHandler.getId("reactor1")
       num() += 1
       if(num() % 2 == 0) CanvasHandler.setFillColor(idNum, "blue")
@@ -61,7 +55,6 @@ object ScalaJSExample extends js.JSApp {
     }
 
     import Reactive._
-    // val reactor1 = Reactor(Reactive.MousePosition, fnPos, "rgb(65, 123, 142)", "black", 3)
     Reactor(Reactive.MousePosition, fnPos, "rgb(65, 123, 142)", "black", 3, "reactor1")
     
     // Reactor(MouseClick, fnMouse, "green")
