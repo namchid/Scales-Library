@@ -57,7 +57,7 @@ object Reactive {
 ** Usage example: Reactor(Reactive.ClockTick(2, 10), fn, "red", "blue", 0)
 ** @params reaction: a final val from Reactive, such as Reactive.MouseClickGetClockTime
 */
-case class Reactor[T, S](reaction: Reactive, fn: T => Scales, fillStyle: String = "grey", strokeStyle: String = "black", lineWidth: Int = 1) {
+case class Reactor[T](reaction: Reactive, fn: T => Scales, fillStyle: String = "grey", strokeStyle: String = "black", lineWidth: Int = 1, id: String = "") {
 	
 	val function = fn.asInstanceOf[(Any => Scales)]
 
@@ -150,7 +150,7 @@ case class Reactor[T, S](reaction: Reactive, fn: T => Scales, fillStyle: String 
 	val index = Var(-1)
 
 	private def initGraphic(g: Graphic): Unit = {
-		CanvasHandler.setAll(index(), fillStyle, strokeStyle, lineWidth)
+		CanvasHandler.setAll(index(), fillStyle, strokeStyle, lineWidth, id)
 		CanvasHandler.addGraphic(g)
 	}
 
