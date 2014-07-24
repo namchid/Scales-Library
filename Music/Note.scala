@@ -21,7 +21,7 @@ object Audio {
 	def ExponentialRamp(targetFreq: Double) = ExpRamp(targetFreq)
 	def LinearRamp(targetFreq: Double) = LinRamp(targetFreq)
 	def NoRamp() = Rampless()
-	def Beats(times: Int, beatDuration: Double, beatPause: Double) = XBeats(times, beatDuration, beatPause)
+	def Beats(times: Int, beatDuration: Double, beatPause: Double) = XBeats(times, beatDuration, beatPause)	
 }
 
 sealed case class Sound(freq: Double = 0, vol: Double = 1) {
@@ -89,7 +89,7 @@ sealed case class Sound(freq: Double = 0, vol: Double = 1) {
 
 }
 
-case class Note(option: Audio, freq: Double = 170, start: Double = 0, vol: Double = 1, duration: Double = 1) extends Scales {
+case class Note(option: Audio, freq: Double, start: Double, duration: Double = 1, vol: Double = 1) extends Scales {
 	val note = Sound(freq, vol)
 	
 	option match {
@@ -139,31 +139,18 @@ case class Note(option: Audio, freq: Double = 170, start: Double = 0, vol: Doubl
 	def volume: Double = vol
 }
 
-case class NoteSeq(notes: Note*) extends Scales {
-	// for(n <- notes) {
-	// 	val note = Sound(n.freq, n.vol)
-	// 	n.option match {
-	// 		case x: Rampless =>
-	// 			note.play(n.start, x.duration)
-	// 		case x: LinRamp =>
-	// 			note.playRamp(n.start, x.duration, x.targetFreq, "linear")
-	// 		case x: ExpRamp =>
-	// 			note.playRamp(n.start, x.duration, x.targetFreq, "exponential")
-	// 		case x: XBeats =>
-	// 			note.playBeats(n.start, x.times, x.beatDuration, x.beatPause)
-	// 	}
-	// }
-}
+//this is basically just to hold the notes so that they can be returned as a subtype of Scales for the reactors
+case class NoteSeq(notes: Note*) extends Scales {}
 
-object C extends Note(Audio.NoRamp, 16.35)
-object Cs extends Note(Audio.NoRamp, 17.32)
-object D extends Note(Audio.NoRamp, 18.35)
-object Ds extends Note(Audio.NoRamp, 19.45)
-object E extends Note(Audio.NoRamp, 20.60)
-object F extends Note(Audio.NoRamp, 21.83)
-object Fs extends Note(Audio.NoRamp, 23.12)
-object G extends Note(Audio.NoRamp, 24.50)
-object Gs extends Note(Audio.NoRamp, 25.96)
-object A extends Note(Audio.NoRamp, 27.50)
-object As extends Note(Audio.NoRamp, 29.14)
-object B extends Note(Audio.NoRamp, 30.87)
+object C extends Note(Audio.NoRamp, 16.35, 0, 1, 1)
+object Cs extends Note(Audio.NoRamp, 17.32, 0, 1, 1)
+object D extends Note(Audio.NoRamp, 18.35, 0, 1, 1)
+object Ds extends Note(Audio.NoRamp, 19.45, 0, 1, 1)
+object E extends Note(Audio.NoRamp, 20.60, 0, 1, 1)
+object F extends Note(Audio.NoRamp, 21.83, 0, 1, 1)
+object Fs extends Note(Audio.NoRamp, 23.12, 0, 1, 1)
+object G extends Note(Audio.NoRamp, 24.50, 0, 1, 1)
+object Gs extends Note(Audio.NoRamp, 25.96, 0, 1, 1)
+object A extends Note(Audio.NoRamp, 27.50, 0, 1, 1)
+object As extends Note(Audio.NoRamp, 29.14, 0, 1, 1)
+object B extends Note(Audio.NoRamp, 30.87, 0, 1, 1)

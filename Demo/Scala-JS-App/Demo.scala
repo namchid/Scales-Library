@@ -69,12 +69,19 @@ object ScalaJSExample extends js.JSApp {
     import Audio._
     
     def fnNote(x: Int): NoteSeq = {
-      val note1 = Note(NoRamp(1), x)
-      val note2 = Note(LinearRamp(0, 2), 400, 1)
-      NoteSeq(note1, note2)
+      // val note1 = Note(NoRamp(1), x)
+      // val note2 = Note(LinearRamp(0, 2), 400, 1)
+      //NoteSeq(Note(NoRamp(1), x), Note(LinearRamp(0, 2), 400, 1))
+      NoteSeq(Note(NoRamp, 222, 0, 1, 1), Note(ExponentialRamp(180), 150, 2))
     }
 
-    Reactor(MouseClickX, fnNote)
+    def fnSingleNote(x: Int): Note = {
+      Note(NoRamp, x, 0)
+    }
+
+    //Reactor(MouseClickX, fnNote)
+    //Reactor(MouseClickX, fnSingleNote)
+    Reactor(MouseClickY, fnNote)
     // Note(LinearRamp(0, 2), 400, 3)
     // Note(ExponentialRamp(200, 2), 170, 6)
     // Note(Beats(5, .5, .5), 300, 8)
