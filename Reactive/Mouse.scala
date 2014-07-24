@@ -15,9 +15,16 @@ object MouseClick {
 	val x = Rx { xy()._1 }
 	val y = Rx { xy()._2 }
 
+	private def updateXY(newX: Int, newY: Int): Unit = {
+		xy() = (newX, newY)
+	}
+
 	private def listen() = Rx {
-		dom.onclick = { 
-			(e: dom.MouseEvent) => xy() = (e.clientX.toInt, e.clientY.toInt)
+
+		Canvas.canvas.onclick = {
+			(e: dom.MouseEvent) => {
+				updateXY(e.clientX.toInt, e.clientY.toInt)
+			}
 		}
 	}
 
@@ -37,9 +44,16 @@ object MousePosition {
 	val x = Rx { xy()._1 }
 	val y = Rx { xy()._2 }
 
+	private def updateXY(newX: Int, newY: Int): Unit = {
+		xy() = (newX, newY)
+	}
+
 	private def listen() = Rx {
-		dom.onmousemove = {
-			(e: dom.MouseEvent) => xy() = (e.clientX.toInt, e.clientY.toInt)
+
+		Canvas.canvas.onmousemove = {
+			(e: dom.MouseEvent) => {
+				updateXY(e.clientX.toInt, e.clientY.toInt)
+			}
 		}
 	}
 
@@ -49,4 +63,3 @@ object MousePosition {
 	def subscribeX(): Rx[Int] = x
 	def subscribeY(): Rx[Int] = y
 }
-
