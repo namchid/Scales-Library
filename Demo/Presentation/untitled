@@ -1,0 +1,32 @@
+import scala.scalajs.js
+import org.scalajs.dom
+import rx._
+
+import edu.depauw.scales.graphics._
+import edu.depauw.scales.reactive._
+import edu.depauw.scales.music._
+
+object SlideContents {
+	val contents: Var[Graphic] = Var(Null)
+}
+
+trait FontType
+case object Title extends FontType
+case object Subtitle extends FontType
+case object Regular extends FontType
+case object 
+
+case object Presentation {
+
+	//later make this graphic or any
+	val bulletpoints: Var[Map(String -> (Int, FontType))] = Var[Map()]
+
+	def addPoint(): Unit = {
+
+	}
+
+	def stringToGraphic(): Unit = {
+
+	}
+
+}
